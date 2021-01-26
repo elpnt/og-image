@@ -1,4 +1,4 @@
-import { ParsedRequest, FileType } from '../api/_lib/types'
+import { ParsedRequest, Theme, FileType } from '../api/_lib/types'
 const { H, R, copee } = window as any
 let timeout = -1
 
@@ -118,13 +118,18 @@ const Toast = ({ show, message }: ToastProps) => {
   )
 }
 
+const themeOptions: DropdownOption[] = [
+  { text: 'Light', value: 'light' },
+  { text: 'Dark', value: 'dark' },
+]
+
 const fileTypeOptions: DropdownOption[] = [
   { text: 'PNG', value: 'png' },
   { text: 'JPEG', value: 'jpeg' },
 ]
 
 const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
-  .map((_, i) => i * 25)
+  .map((_, i) => i * 10)
   .filter((n) => n > 0)
   .map((n) => ({ text: n + 'px', value: n + 'px' }))
 
@@ -138,8 +143,6 @@ interface AppState extends ParsedRequest {
   showToast: boolean
   messageToast: string
   selectedImageIndex: number
-  widths: string[]
-  heights: string[]
   overrideUrl: URL | null
 }
 
@@ -159,7 +162,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   }
   const {
     fileType = 'png',
-    fontSize = '100px',
+    fontSize = '60px',
     theme = 'light',
     md = true,
     text = '**Hello** World',
@@ -183,6 +186,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
       { className: 'pull-left' },
       H(
         'div',
+        H(Field, {
+          label: 'Theme',
+          input: H(Dropdown, {
+            options: themeOptions,
+            value: theme,
+            onchange: (val: Theme) => setLoadingState({ theme: val }),
+          }),
+        }),
         H(Field, {
           label: 'File Type',
           input: H(Dropdown, {
