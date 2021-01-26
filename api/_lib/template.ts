@@ -21,19 +21,6 @@ function getCss(theme: string, fontSize: string) {
 
   return `
     @import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP');
-    @font-face {
-        font-family: 'NotoSans';
-        font-style:  normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
-    }
-
-    @font-face {
-        font-family: 'NotoSans';
-        font-style:  normal;
-        font-weight: bold;
-        src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
-    }
 
     @font-face {
         font-family: 'Vera';
@@ -73,7 +60,7 @@ function getCss(theme: string, fontSize: string) {
     }
     
     .heading {
-        font-family: 'NotoSans', sans-serif;
+        font-family: 'Noto Sans JP', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
         font-style: normal;
         color: ${foreground};
