@@ -34,8 +34,8 @@ export function parseRequest(req: IncomingMessage) {
     text: decodeURIComponent(text),
     theme: theme === 'dark' ? 'dark' : 'light',
     md: md === '1' || md === 'true',
-    fontSize: fontSize || '120px',
-    num: num || '1200',
+    fontSize: fontSize || '60px',
+    num: num || '300',
   }
   return parsedRequest
 }
