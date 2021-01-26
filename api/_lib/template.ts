@@ -20,6 +20,7 @@ function getCss(theme: string, fontSize: string) {
   const foreground = theme === 'dark' ? '#fff' : '#111'
 
   return `
+    @import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP');
     @font-face {
         font-family: 'NotoSans';
         font-style:  normal;
