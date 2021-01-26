@@ -133,6 +133,11 @@ const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
   .filter((n) => n > 0)
   .map((n) => ({ text: n + 'px', value: n + 'px' }))
 
+const numOptions: DropdownOption[] = Array.from({ length: 10 })
+  .map((_, i) => i * 100)
+  .filter((n) => n > 0)
+  .map((n) => ({ text: n.toString(), value: n.toString() }))
+
 const markdownOptions: DropdownOption[] = [
   { text: 'Plain Text', value: '0' },
   { text: 'Markdown', value: '1' },
@@ -165,6 +170,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
     fontSize = '60px',
     theme = 'light',
     md = true,
+    num = '300',
     text = '**Hello** World',
     showToast = false,
     messageToast = '',
@@ -177,6 +183,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.searchParams.append('theme', theme)
   url.searchParams.append('md', mdValue)
   url.searchParams.append('fontSize', fontSize)
+  url.searchParams.append('num', num)
 
   return H(
     'div',
@@ -208,6 +215,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
             options: fontSizeOptions,
             value: fontSize,
             onchange: (val: string) => setLoadingState({ fontSize: val }),
+          }),
+        }),
+        H(Field, {
+          label: 'Number of Particles',
+          input: H(Dropdown, {
+            options: numOptions,
+            value: num,
+            onchange: (val: string) => setLoadingState({ num: val }),
           }),
         }),
         H(Field, {
