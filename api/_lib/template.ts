@@ -1,27 +1,25 @@
+import { readFileSync } from 'fs'
+import marked from 'marked'
+import { sanitizeHtml } from './sanitizer'
+import { ParsedRequest } from './types'
+const twemoji = require('twemoji')
+const twOptions = { folder: 'svg', ext: '.svg' }
+const emojify = (text: string) => twemoji.parse(text, twOptions)
 
-import { readFileSync } from 'fs';
-import marked from 'marked';
-import { sanitizeHtml } from './sanitizer';
-import { ParsedRequest } from './types';
-const twemoji = require('twemoji');
-const twOptions = { folder: 'svg', ext: '.svg' };
-const emojify = (text: string) => twemoji.parse(text, twOptions);
-
-const rglr = readFileSync(`${__dirname}/../_fonts/NotoSans-Regular.woff2`).toString('base64');
-const bold = readFileSync(`${__dirname}/../_fonts/NotoSans-Bold.woff2`).toString('base64');
-const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
+const rglr = readFileSync(
+  `${__dirname}/../_fonts/NotoSans-Regular.woff2`
+).toString('base64')
+const bold = readFileSync(
+  `${__dirname}/../_fonts/NotoSans-Bold.woff2`
+).toString('base64')
+const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
+  'base64'
+)
 
 function getCss(theme: string, fontSize: string) {
-    let background = 'white';
-    let foreground = 'black';
-    let radial = 'lightgray';
+  const foreground = theme === 'dark' ? '#fff' : '#111'
 
-    if (theme === 'dark') {
-        background = 'black';
-        foreground = 'white';
-        radial = 'dimgray';
-    }
-    return `
+  return `
     @font-face {
         font-family: 'Noto Sans';
         font-style:  normal;
@@ -44,10 +42,9 @@ function getCss(theme: string, fontSize: string) {
       }
 
     body {
-        background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
-        background-size: 100px 100px;
         height: 100vh;
+        margin: 0;
+        padding: 0;
         display: flex;
         text-align: center;
         align-items: center;
@@ -56,6 +53,8 @@ function getCss(theme: string, fontSize: string) {
 
     code {
         color: #D400FF;
+        padding: 0.1em;
+        border-radius: 0.1em;
         font-family: 'Vera';
         white-space: pre-wrap;
         letter-spacing: -5px;
@@ -63,28 +62,6 @@ function getCss(theme: string, fontSize: string) {
 
     code:before, code:after {
         content: '\`';
-    }
-
-    .logo-wrapper {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
-    }
-
-    .logo {
-        margin: 0 75px;
-    }
-
-    .plus {
-        color: #BBB;
-        font-family: Times New Roman, Verdana;
-        font-size: 100px;
-    }
-
-    .spacer {
-        margin: 150px;
     }
 
     .emoji {
@@ -100,13 +77,51 @@ function getCss(theme: string, fontSize: string) {
         font-style: normal;
         color: ${foreground};
         line-height: 1.8;
-    }`;
+        text-heading: justify;
+        text-shadow: 0 0 0.04em #808080;
+    }
+    
+    #tsparticles {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+    }`
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
-    return `<!DOCTYPE html>
-<html>
+  const { text, theme, md, fontSize, num } = parsedReq
+  const background = theme === 'dark' ? '#111' : '#eee'
+  const particleColor = theme === 'dark' ? '#707070' : '#a0a0a0'
+
+  const config = {
+    particles: {
+      number: {
+        value: parseInt(num),
+      },
+      links: {
+        enable: true,
+        color: particleColor,
+      },
+      move: {
+        enable: false,
+      },
+      size: {
+        value: 3,
+        random: true,
+      },
+      color: {
+        value: particleColor,
+      },
+    },
+    background: {
+      color: background,
+    },
+  }
+
+  return `
+    <!DOCTYPE html>
+    <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,33 +129,21 @@ export function getHtml(parsedReq: ParsedRequest) {
         ${getCss(theme, fontSize)}
     </style>
     <body>
+        <div id="tsparticles"></div>
         <div>
-            <div class="spacer">
-            <div class="logo-wrapper">
-                ${images.map((img, i) =>
-                    getPlusSign(i) + getImage(img, widths[i], heights[i])
-                ).join('')}
-            </div>
-            <div class="spacer">
             <div class="heading">${emojify(
-                md ? marked(text) : sanitizeHtml(text)
+              md ? marked(text) : sanitizeHtml(text)
             )}
             </div>
         </div>
     </body>
-</html>`;
-}
-
-function getImage(src: string, width ='auto', height = '225') {
-    return `<img
-        class="logo"
-        alt="Generated Image"
-        src="${sanitizeHtml(src)}"
-        width="${sanitizeHtml(width)}"
-        height="${sanitizeHtml(height)}"
-    />`
-}
-
-function getPlusSign(i: number) {
-    return i === 0 ? '' : '<div class="plus">+</div>';
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/tsparticles/1.18.1/tsparticles.min.js"
+        integrity="sha512-PYHWDEuXOTJ9MZ+/QHqkbgiEYZ+LImQv3i/9NyYOABFvK37e4q4Wg7aQDN1JpoGiEu1TYZh6JMrZluZox2gbDA=="
+        crossorigin="anonymous"
+    ></script>
+    <script>
+        tsParticles.load('tsparticles', ${JSON.stringify(config)});
+    </script>
+    </html>`
 }
