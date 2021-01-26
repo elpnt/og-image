@@ -21,14 +21,14 @@ function getCss(theme: string, fontSize: string) {
 
   return `
     @font-face {
-        font-family: 'Noto Sans';
+        font-family: 'NotoSans';
         font-style:  normal;
         font-weight: normal;
         src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
     }
 
     @font-face {
-        font-family: 'Noto Sans';
+        font-family: 'NotoSans';
         font-style:  normal;
         font-weight: bold;
         src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
@@ -72,7 +72,7 @@ function getCss(theme: string, fontSize: string) {
     }
     
     .heading {
-        font-family: 'Inter', sans-serif;
+        font-family: 'NotoSans', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
         font-style: normal;
         color: ${foreground};
@@ -91,7 +91,7 @@ function getCss(theme: string, fontSize: string) {
 
 export function getHtml(parsedReq: ParsedRequest) {
   const { text, theme, md, fontSize, num } = parsedReq
-  const background = theme === 'dark' ? '#111' : '#eee'
+  const background = theme === 'dark' ? '#111' : '#fff'
   const particleColor = theme === 'dark' ? '#707070' : '#a0a0a0'
 
   const config = {
