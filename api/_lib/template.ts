@@ -60,7 +60,6 @@ function getCss(theme: string, fontSize: string) {
         color: ${foreground};
         line-height: 1.8;
         text-heading: justify;
-        text-shadow: 0 0 0.04em #808080;
     }
     
     #tsparticles {
@@ -74,7 +73,7 @@ function getCss(theme: string, fontSize: string) {
 export function getHtml(parsedReq: ParsedRequest) {
   const { text, theme, md, fontSize, num } = parsedReq
   const background = theme === 'dark' ? '#111' : '#fff'
-  const particleColor = theme === 'dark' ? '#707070' : '#a0a0a0'
+  const particleColor = theme === 'dark' ? '#707070' : '#c0c0c0'
 
   const config = {
     particles: {
